@@ -50,9 +50,9 @@ The `packages/plugin` directory has a complete plugin example. It includes:
 - An example task, which is defined in `src/index.ts`, and whose action is in `src/tasks/my-task.ts`.
 - An example of how to extend the Hardhat config, which includes:
   - The logic to extend the validation and resolution of the Hardhat config, in `src/config.ts`.
-  - The config hook handlers to inject that logic into Hardhat, in `src/hooks/config.ts`.
-  - The type-extensions to add your config to `HardhatUserConfig` and `HardhatConfig`, in `src/type-extensions.ts`.
-- A network hook handler, which is in `src/hooks/network.ts`, which shows how to define them, and prints a few debug messages.
+  - The config Hook Handlers to inject that logic into Hardhat, in `src/hooks/config.ts`.
+  - The Type Extensions to add your config to `HardhatUserConfig` and `HardhatConfig`, in `src/type-extensions.ts`.
+- A network Hook Handler, which is in `src/hooks/network.ts`, which shows how to define them, and prints a few debug messages.
 - An example of how to test the config of your plugin, in `test/config.ts`.
 - An example of two different ways to test your plugin functionality, in `test/example-tests.ts`:
   - Using a file-system based fixture project.
