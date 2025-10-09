@@ -47,7 +47,7 @@
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "hardhat": "^3.0.6",
-    "prettier": "3.2.5",
+    "prettier": "3.6.2",
     "rimraf": "^5.0.5",
     "tsx": "^4.19.3",
     "typescript": "~5.8.0",

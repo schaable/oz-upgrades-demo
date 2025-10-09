@@ -8,5 +8,8 @@
     "lint:fix": "pnpm --recursive lint:fix",
     "test": "pnpm --recursive test",
     "watch": "pnpm --filter ./packages/plugin watch"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
   }
 }
