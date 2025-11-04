@@ -13,11 +13,12 @@ npm install --save-dev hardhat-my-plugin
 In your `hardhat.config.ts` file, import the plugin and add it to the `plugins` array:
 
 ```ts
+import { defineConfig } from "hardhat/config";
 import myPlugin from "hardhat-my-plugin";
 
-export default {
+export default defineConfig({
   plugins: [myPlugin],
-};
+});
 ```
 
 ## Usage
@@ -39,15 +40,16 @@ Hello, Hardhat!
 You can configure the greeting that's printed by using the `myConfig` field in your Hardhat config. For example, you can have this config:
 
 ```ts
+import { defineConfig } from "hardhat/config";
 import myPlugin from "hardhat-my-plugin";
 
-export default {
+export default defineConfig({
   plugins: [myPlugin],
   myConfig: {
     greeting: "Hola",
   },
   //...
-};
+});
 ```
 
 ### Network logs
