@@ -40,7 +40,7 @@
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@nomicfoundation/hardhat-node-test-reporter": "^3.0.0",
-    "@nomicfoundation/hardhat-verify": "^3.0.8",
+    "@nomicfoundation/hardhat-verify": "^3.0.10",
     "@openzeppelin/upgrades-core": "^1.44.2",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.11.0",

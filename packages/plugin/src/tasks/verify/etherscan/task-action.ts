@@ -1,3 +1,6 @@
+import type { Etherscan } from "@nomicfoundation/hardhat-verify/types";
+import type { BuildInfo } from "hardhat/types/artifacts";
+
 import {
   getTransactionByHash,
   getImplementationAddress,
@@ -19,12 +22,9 @@ import UpgradeableBeacon from "@openzeppelin/upgrades-core/artifacts/@openzeppel
 import TransparentUpgradeableProxy from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy.json" with { type: "json" };
 import ProxyAdmin from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json" with { type: "json" };
 
-import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
 import { TaskOverrideActionFunction } from "hardhat/types/tasks";
 import { EthereumProvider } from "hardhat/types/providers";
 import { Artifact } from "hardhat/types/artifacts";
-// TODO (oz): the imports below would be imported from hardhat-verify
-import { Etherscan, getEtherscanInstance } from "../../../verify-mock.js";
 
 /**
  * A contract artifact and the corresponding event that it logs during construction.
@@ -85,7 +85,10 @@ const verifyEtherscanAction: TaskOverrideActionFunction = async (
   hre,
   runSuper,
 ) => {
-  const { provider } = await hre.network.connect();
+  const {
+    provider,
+    verifier: { etherscan },
+  } = await hre.network.connect();
   const proxyAddress = args.address as string; // TODO (oz): validate
   const errorReport: ErrorReport = {
     errors: [],
@@ -97,7 +100,7 @@ const verifyEtherscanAction: TaskOverrideActionFunction = async (
   if (await isTransparentOrUUPSProxy(provider, proxyAddress)) {
     await fullVerifyTransparentOrUUPS(
       provider,
-      hre.config,
+      etherscan,
       proxyAddress,
       hardhatVerify,
       errorReport,
@@ -105,14 +108,13 @@ const verifyEtherscanAction: TaskOverrideActionFunction = async (
   } else if (await isBeaconProxy(provider, proxyAddress)) {
     await fullVerifyBeaconProxy(
       provider,
-      hre.config,
+      etherscan,
       proxyAddress,
       hardhatVerify,
       errorReport,
     );
   } else if (await isBeacon(provider, proxyAddress)) {
     proxy = false;
-    const etherscan = await getEtherscanInstance(provider, hre.config);
     await fullVerifyBeacon(
       provider,
       proxyAddress,
@@ -225,15 +227,13 @@ class BytecodeNotMatchArtifact extends Error {
  */
 export async function fullVerifyTransparentOrUUPS(
   provider: EthereumProvider,
-  hardhatConfig: HardhatRuntimeEnvironment["config"],
+  etherscan: Etherscan,
   proxyAddress: string,
   hardhatVerify: (address: string) => Promise<unknown>,
   errorReport: ErrorReport,
 ) {
   const implAddress = await getImplementationAddress(provider, proxyAddress);
   await verifyImplementation(hardhatVerify, implAddress, errorReport);
-
-  const etherscan = await getEtherscanInstance(provider, hardhatConfig);
 
   await verifyTransparentOrUUPS();
   await linkProxyWithImplementationAbi(
@@ -350,7 +350,7 @@ export async function fullVerifyTransparentOrUUPS(
  */
 async function fullVerifyBeaconProxy(
   provider: EthereumProvider,
-  hardhatConfig: HardhatRuntimeEnvironment["config"],
+  etherscan: Etherscan,
   proxyAddress: string,
   hardhatVerify: (address: string) => Promise<unknown>,
   errorReport: ErrorReport,
@@ -360,7 +360,6 @@ async function fullVerifyBeaconProxy(
     provider,
     beaconAddress,
   );
-  const etherscan = await getEtherscanInstance(provider, hardhatConfig);
 
   await fullVerifyBeacon(
     provider,
@@ -692,8 +691,8 @@ async function verifyContractWithConstructorArgs(
 
   const params = {
     contractAddress: address,
-    compilerInput: JSON.stringify(artifactsBuildInfo.input),
-    contractName: `${artifact.sourceName}:${artifact.contractName}`,
+    compilerInput: artifactsBuildInfo.input,
+    contractName: `${artifact.inputSourceName}:${artifact.contractName}`,
     compilerVersion: `v${artifactsBuildInfo.solcLongVersion}`,
     constructorArguments: constructorArguments,
   };
@@ -701,7 +700,7 @@ async function verifyContractWithConstructorArgs(
   try {
     const status = await verifyAndGetStatus(params, etherscan);
 
-    if (status.isSuccess()) {
+    if (status.success) {
       console.log(
         `Successfully verified contract ${artifact.contractName} at ${address}.`,
       );
@@ -878,7 +877,7 @@ function inferConstructorArgs(txInput: string, creationCode: string) {
 export async function verifyAndGetStatus(
   params: {
     contractAddress: string;
-    compilerInput: string;
+    compilerInput: BuildInfo["input"];
     contractName: string;
     compilerVersion: string;
     constructorArguments: string;
@@ -886,7 +885,11 @@ export async function verifyAndGetStatus(
   etherscan: Etherscan,
 ) {
   const guid = await etherscan.verify(params);
-  return etherscan.getVerificationStatus(guid);
+  return etherscan.pollVerificationStatus(
+    guid,
+    params.contractAddress,
+    params.contractName,
+  );
 }
 
 export default verifyEtherscanAction;
