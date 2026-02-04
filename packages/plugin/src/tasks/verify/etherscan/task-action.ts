@@ -52,7 +52,6 @@ interface EtherscanEventResponse {
 /**
  * The proxy-related contracts and their corresponding events that may have been deployed the current version of this plugin.
  */
-// TODO (oz): cast needed due to TS type mismatch noted in verify-mock.ts
 const verifiableContracts = {
   erc1967proxy: {
     artifact: ERC1967Proxy as Artifact,
@@ -78,7 +77,7 @@ const verifiableContracts = {
 
 const RESPONSE_OK = "1";
 
-// TODO (oz): Consider splitting this file into modules (e.g., errors.ts, etherscan-api.ts, verify.ts).
+// TODO: Consider splitting this file into modules (e.g., errors.ts, etherscan-api.ts, verify.ts).
 // Hardhat usually keeps only the action function in task-action files, though is not a requirement and
 // having helper functions here is also fine.
 
@@ -91,7 +90,8 @@ const verifyEtherscanAction: TaskOverrideActionFunction = async (
     provider,
     verifier: { etherscan },
   } = await hre.network.connect();
-  const proxyAddress = args.address as string; // TODO (oz): validate
+  // TODO: validate the address to avoid casting
+  const proxyAddress = args.address as string;
   const errorReport: ErrorReport = {
     errors: [],
     severity: "error",
@@ -767,7 +767,8 @@ async function getEventResponse(
     throw new UpgradesError(
       `Failed to get logs for contract at address ${address}.`,
       () =>
-        // TODO (oz): validate cast
+        // TODO: while usually result is a string message on Etherscan errors,
+        // we should verify this cast is always valid
         `Etherscan returned with message: ${responseBody.message}, reason: ${responseBody.result as string}`,
     );
   }
@@ -834,7 +835,8 @@ async function linkProxyWithImplementationAbi(
     console.log("Successfully linked proxy to implementation.");
   } else {
     recordError(
-      // TODO (oz): validate cast
+      // TODO: while usually result is a string message on Etherscan errors,
+      // we should verify this cast is always valid
       `Failed to link proxy ${proxyAddress} with its implementation. Reason: ${responseBody.result as string}`,
       errorReport,
     );
@@ -872,7 +874,6 @@ function inferConstructorArgs(txInput: string, creationCode: string) {
   }
 }
 
-// TODO (oz): I've updated this function to match the latest hardhat-verify API
 export async function verifyAndGetStatus(
   params: {
     contractAddress: string;
