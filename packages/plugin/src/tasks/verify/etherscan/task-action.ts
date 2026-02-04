@@ -25,6 +25,7 @@ import ProxyAdmin from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/cont
 import { TaskOverrideActionFunction } from "hardhat/types/tasks";
 import { EthereumProvider } from "hardhat/types/providers";
 import { Artifact } from "hardhat/types/artifacts";
+import debug from "../../../utils/debug.js";
 
 /**
  * A contract artifact and the corresponding event that it logs during construction.
@@ -634,10 +635,9 @@ async function attemptVerifyWithCreationEvent(
     address,
     possibleContractInfo,
   );
-  // TODO (oz)
-  /*   debug(
+  debug(
     `verifying contract ${contractInfo.artifact.contractName} at ${address}`,
-  ); */
+  );
 
   const tx = await getTransactionByHash(provider, txHash);
   if (tx === null) {
@@ -684,10 +684,9 @@ async function verifyContractWithConstructorArgs(
   constructorArguments: string,
   errorReport: ErrorReport,
 ) {
-  // TODO (oz)
-  /*   debug(
+  debug(
     `verifying contract ${address} with constructor args ${constructorArguments}`,
-  ); */
+  );
 
   const params = {
     contractAddress: address,
@@ -761,8 +760,7 @@ async function getEventResponse(
     responseBody.message === "No records found" ||
     responseBody.message === "No logs found"
   ) {
-    // TODO (oz)
-    // debug(`no result found for event topic ${topic} at address ${address}`);
+    debug(`no result found for event topic ${topic} at address ${address}`);
     return undefined;
   } else {
     throw new UpgradesError(
