@@ -21,6 +21,7 @@ import BeaconProxy from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/con
 import UpgradeableBeacon from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/beacon/UpgradeableBeacon.sol/UpgradeableBeacon.json" with { type: "json" };
 import TransparentUpgradeableProxy from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy.json" with { type: "json" };
 import ProxyAdmin from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json" with { type: "json" };
+import { keccak256 } from "ethereumjs-util";
 
 import { TaskOverrideActionFunction } from "hardhat/types/tasks";
 import { EthereumProvider } from "hardhat/types/providers";
@@ -748,7 +749,7 @@ async function getEventResponse(
     fromBlock: "0",
     toBlock: "latest",
     address: address,
-    topic0: "0x", // + keccak256(Buffer.from(topic)).toString("hex"), // TODO (oz)
+    topic0: "0x" + keccak256(Buffer.from(topic)).toString("hex"),
   };
 
   const responseBody = await etherscan.customApiCall(params);
