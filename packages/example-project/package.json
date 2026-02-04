@@ -8,11 +8,18 @@
     "watch": "tsc --build . --watch"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.4",
+    "@nomicfoundation/hardhat-keystore": "^3.0.4",
+    "@nomicfoundation/hardhat-verify": "file:../../vendor/nomicfoundation-hardhat-verify-3.0.9.tgz",
+    "@openzeppelin/contracts": "^5.2.0",
+    "@openzeppelin/contracts-upgradeable": "^5.2.0",
+    "@openzeppelin/upgrades-core": "^1.44.2",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.11.0",
-    "hardhat": "^3.0.11",
+    "ethers": "^6.13.5",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
+    "hardhat": "^3.1.6",
     "hardhat-my-plugin": "workspace:*",
-    "typescript": "~5.8.0",
-    "forge-std": "github:foundry-rs/forge-std#v1.9.4"
+    "typescript": "~5.8.0"
   }
 }

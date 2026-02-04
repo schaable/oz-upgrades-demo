@@ -17,6 +17,9 @@ importers:
       '@nomicfoundation/hardhat-ethers':
         specifier: ^4.0.4
         version: 4.0.4(hardhat@3.1.6)
+      '@nomicfoundation/hardhat-keystore':
+        specifier: ^3.0.4
+        version: 3.0.4(hardhat@3.1.6)
       '@nomicfoundation/hardhat-verify':
         specifier: file:../../vendor/nomicfoundation-hardhat-verify-3.0.9.tgz
         version: file:vendor/nomicfoundation-hardhat-verify-3.0.9.tgz(hardhat@3.1.6)
@@ -53,6 +56,12 @@ importers:
 
   packages/plugin:
     dependencies:
+      '@nomicfoundation/hardhat-errors':
+        specifier: ^3.0.6
+        version: 3.0.6
+      '@openzeppelin/upgrades-core':
+        specifier: ^1.41.0
+        version: 1.44.2
       debug:
         specifier: ^4.4.3
         version: 4.4.3
@@ -69,9 +78,6 @@ importers:
       '@nomicfoundation/hardhat-verify':
         specifier: file:../../vendor/nomicfoundation-hardhat-verify-3.0.9.tgz
         version: file:vendor/nomicfoundation-hardhat-verify-3.0.9.tgz(hardhat@3.1.6)
-      '@openzeppelin/upgrades-core':
-        specifier: ^1.44.2
-        version: 1.44.2
       '@tsconfig/node22':
         specifier: ^22.0.2
         version: 22.0.2
@@ -437,6 +443,10 @@ packages:
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
+  '@noble/ciphers@1.2.1':
+    resolution: {integrity: sha512-rONPWMC7PeExE077uLE4oqWrZ1IvAfz3oH9LibVAcVCopJiA9R62uavnbEzdkVmJYI6M6Zgkbeb07+tWjlq2XA==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@noble/curves@1.2.0':
     resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
 
@@ -454,6 +464,10 @@ packages:
   '@noble/hashes@1.4.0':
     resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
     engines: {node: '>= 16'}
+
+  '@noble/hashes@1.7.1':
+    resolution: {integrity: sha512-B8XBPsn4vT/KJAGqDzbwztd+6Yte3P4V7iafm24bxgDe/mlRuK6xmWPuCNrKt2vDafZ8MfJLlchDG/vYafQEjQ==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@noble/hashes@1.7.2':
     resolution: {integrity: sha512-biZ0NUSxyjLLqo6KxEJ1b+C2NAx0wtDoFvCaXHGgUkeHzf3Xc1xKumFKREuT7f7DARNZ/slvYUwFG6B0f2b6hQ==}
@@ -503,9 +517,6 @@ packages:
     resolution: {integrity: sha512-JigYWf2stjpDxSndBsxRoobQHK8kz4SAVaHtTIKQLIHbsBwymE8i120Ejne6Jk+Ndc5CsNINXB8/bK6vLPe9jA==}
     engines: {node: '>= 20'}
 
-  '@nomicfoundation/hardhat-errors@3.0.3':
-    resolution: {integrity: sha512-qvVIyNE5yXFdwCD7G74fb3j+p5PjYSej/K2mhOuJBhxdGwzARpyoJbcDZrjkNyabytlt95iniZLHHWM9jvVXEA==}
-
   '@nomicfoundation/hardhat-errors@3.0.6':
     resolution: {integrity: sha512-3x+OVdZv7Rgy3z6os9pB6kiHLxs6q0PCXHRu+WLZflr44PG9zW+7V9o+ehrUqmmivlHcIFr3Qh4M2wZVuoCYww==}
 
@@ -513,6 +524,11 @@ packages:
     resolution: {integrity: sha512-UTw3iM7AMZ1kZlzgJbtAEfWWDYjcnT0EZkRUZd1wIVtMOXIE4nc6Ya4veodAt/KpBhG+6W06g50W+Z/0wTm62g==}
     peerDependencies:
       hardhat: ^3.0.7
+
+  '@nomicfoundation/hardhat-keystore@3.0.4':
+    resolution: {integrity: sha512-g1++qRzyYyaItbphDUctEZ3THI7KCgeuTvDV9/jL1OU2YlFXZOoi8gqR+tSaTOC41Kl24kyTfgnWlQgg6Q9e0w==}
+    peerDependencies:
+      hardhat: ^3.0.0
 
   '@nomicfoundation/hardhat-node-test-reporter@3.0.1':
     resolution: {integrity: sha512-p6yNKZFnJ2OMplXx7zi45KGWr4hr/qMkg+gTuSSLLlph7NL1DGjGG+N6GrZs46AGSrsnYEocKXGnavl92dxEig==}
@@ -2548,6 +2564,8 @@ snapshots:
       '@tybys/wasm-util': 0.10.0
     optional: true
 
+  '@noble/ciphers@1.2.1': {}
+
   '@noble/curves@1.2.0':
     dependencies:
       '@noble/hashes': 1.3.2
@@ -2563,6 +2581,8 @@ snapshots:
   '@noble/hashes@1.3.2': {}
 
   '@noble/hashes@1.4.0': {}
+
+  '@noble/hashes@1.7.1': {}
 
   '@noble/hashes@1.7.2': {}
 
@@ -2602,12 +2622,6 @@ snapshots:
       '@nomicfoundation/edr-linux-x64-musl': 0.12.0-next.22
       '@nomicfoundation/edr-win32-x64-msvc': 0.12.0-next.22
 
-  '@nomicfoundation/hardhat-errors@3.0.3':
-    dependencies:
-      '@nomicfoundation/hardhat-utils': 3.0.5
-    transitivePeerDependencies:
-      - supports-color
-
   '@nomicfoundation/hardhat-errors@3.0.6':
     dependencies:
       '@nomicfoundation/hardhat-utils': 3.0.6
@@ -2616,7 +2630,7 @@ snapshots:
 
   '@nomicfoundation/hardhat-ethers@4.0.4(hardhat@3.1.6)':
     dependencies:
-      '@nomicfoundation/hardhat-errors': 3.0.3
+      '@nomicfoundation/hardhat-errors': 3.0.6
       '@nomicfoundation/hardhat-utils': 3.0.5
       debug: 4.4.3
       ethereum-cryptography: 2.2.1
@@ -2626,6 +2640,20 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
+
+  '@nomicfoundation/hardhat-keystore@3.0.4(hardhat@3.1.6)':
+    dependencies:
+      '@noble/ciphers': 1.2.1
+      '@noble/hashes': 1.7.1
+      '@nomicfoundation/hardhat-errors': 3.0.6
+      '@nomicfoundation/hardhat-utils': 3.0.6
+      '@nomicfoundation/hardhat-zod-utils': 3.0.1(zod@3.25.76)
+      chalk: 5.6.2
+      debug: 4.4.3
+      hardhat: 3.1.6
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - supports-color
 
   '@nomicfoundation/hardhat-node-test-reporter@3.0.1':
     dependencies:
@@ -2664,7 +2692,7 @@ snapshots:
   '@nomicfoundation/hardhat-verify@file:vendor/nomicfoundation-hardhat-verify-3.0.9.tgz(hardhat@3.1.6)':
     dependencies:
       '@ethersproject/abi': 5.8.0
-      '@nomicfoundation/hardhat-errors': 3.0.3
+      '@nomicfoundation/hardhat-errors': 3.0.6
       '@nomicfoundation/hardhat-utils': 3.0.5
       '@nomicfoundation/hardhat-zod-utils': 3.0.1(zod@3.25.76)
       cbor2: 1.12.0
@@ -2678,7 +2706,7 @@ snapshots:
 
   '@nomicfoundation/hardhat-zod-utils@3.0.1(zod@3.25.76)':
     dependencies:
-      '@nomicfoundation/hardhat-errors': 3.0.3
+      '@nomicfoundation/hardhat-errors': 3.0.6
       '@nomicfoundation/hardhat-utils': 3.0.5
       zod: 3.25.76
     transitivePeerDependencies:

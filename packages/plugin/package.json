@@ -41,7 +41,6 @@
     "@eslint/js": "^9.35.0",
     "@nomicfoundation/hardhat-node-test-reporter": "^3.0.0",
     "@nomicfoundation/hardhat-verify": "file:../../vendor/nomicfoundation-hardhat-verify-3.0.9.tgz",
-    "@openzeppelin/upgrades-core": "^1.44.2",
     "@tsconfig/node22": "^22.0.2",
     "@types/debug": "^4.1.12",
     "@types/node": "^22.11.0",
@@ -58,10 +57,11 @@
   },
   "peerDependencies": {
     "@nomicfoundation/hardhat-verify": "^3.0.9",
-    "@openzeppelin/upgrades-core": "^1.44.2",
     "hardhat": "^3.1.6"
   },
   "dependencies": {
+    "@nomicfoundation/hardhat-errors": "^3.0.6",
+    "@openzeppelin/upgrades-core": "^1.41.0",
     "debug": "^4.4.3",
     "ethereumjs-util": "^7.1.5"
   }

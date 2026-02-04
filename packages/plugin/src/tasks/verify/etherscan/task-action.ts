@@ -1,5 +1,11 @@
-import type { Etherscan } from "@nomicfoundation/hardhat-verify/types";
+import type {
+  Etherscan,
+  EtherscanResponseBody,
+} from "@nomicfoundation/hardhat-verify/types";
 import type { BuildInfo } from "hardhat/types/artifacts";
+import type { TaskOverrideActionFunction } from "hardhat/types/tasks";
+import type { EthereumProvider } from "hardhat/types/providers";
+import type { Artifact } from "hardhat/types/artifacts";
 
 import {
   getTransactionByHash,
@@ -21,11 +27,11 @@ import BeaconProxy from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/con
 import UpgradeableBeacon from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/beacon/UpgradeableBeacon.sol/UpgradeableBeacon.json" with { type: "json" };
 import TransparentUpgradeableProxy from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy.json" with { type: "json" };
 import ProxyAdmin from "@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts-v5/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json" with { type: "json" };
+
 import { keccak256 } from "ethereumjs-util";
 
-import { TaskOverrideActionFunction } from "hardhat/types/tasks";
-import { EthereumProvider } from "hardhat/types/providers";
-import { Artifact } from "hardhat/types/artifacts";
+import { HardhatError } from "@nomicfoundation/hardhat-errors";
+
 import debug from "../../../utils/debug.js";
 
 /**
@@ -752,7 +758,10 @@ async function getEventResponse(
     topic0: "0x" + keccak256(Buffer.from(topic)).toString("hex"),
   };
 
-  const responseBody = await etherscan.customApiCall(params);
+  const responseBody = await callEtherscanApi(etherscan, params);
+  // const responseBody = await etherscan.customApiCall(params, {
+  //   method: "POST",
+  // });
 
   if (responseBody.status === RESPONSE_OK) {
     const result = responseBody.result as EtherscanEventResponse[];
@@ -818,7 +827,8 @@ async function linkProxyWithImplementationAbi(
     address: proxyAddress,
     expectedimplementation: implAddress,
   };
-  let responseBody = await etherscan.customApiCall(params);
+  let responseBody = await callEtherscanApi(etherscan, params);
+  // let responseBody = await etherscan.customApiCall(params);
 
   if (responseBody.status === RESPONSE_OK) {
     // initial call was OK, but need to send a status request using the returned guid to get the actual verification status
@@ -856,7 +866,8 @@ async function checkProxyVerificationStatus(
     action: "checkproxyverification",
     guid: guid,
   };
-  return await etherscan.customApiCall(checkProxyVerificationParams);
+  return await callEtherscanApi(etherscan, checkProxyVerificationParams);
+  // return await etherscan.customApiCall(checkProxyVerificationParams);
 }
 
 /**
@@ -890,6 +901,45 @@ export async function verifyAndGetStatus(
     params.contractAddress,
     params.contractName,
   );
+}
+
+// TODO: I've added this wrapper function to allow allow customization of the
+// error message from customApiCall, but we could use customApiCall directly if we
+// are okay with its current error messages.
+/**
+ * Call the configured Etherscan API with the given parameters.
+ *
+ * @param etherscan Etherscan instance
+ * @param params The API parameters to call with
+ * @returns The Etherscan API response
+ */
+export async function callEtherscanApi(
+  etherscan: Etherscan,
+  params: Record<string, unknown>,
+): Promise<EtherscanResponseBody> {
+  try {
+    const responseBodyJson = await etherscan.customApiCall(params, {
+      method: "POST",
+    });
+
+    debug("Etherscan response", JSON.stringify(responseBodyJson));
+
+    return responseBodyJson;
+  } catch (e: unknown) {
+    if (HardhatError.isHardhatError(e)) {
+      const { statusCode, errorMessage } = e.messageArguments as {
+        statusCode?: number;
+        errorMessage?: string;
+      };
+      if (statusCode !== undefined) {
+        throw new UpgradesError(
+          `Etherscan API call failed with status ${statusCode}, response: ${errorMessage}`,
+        );
+      }
+      throw new UpgradesError(`Etherscan API call failed: ${errorMessage}`);
+    }
+    throw e;
+  }
 }
 
 export default verifyEtherscanAction;
